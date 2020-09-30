@@ -28,8 +28,7 @@ function move(i, j) {
   }
   color = 3 - color;
   show(borderData);
-  // 自动检查是否要取胜
-  console.log(bestChoice(borderData, color));
+  computerMove();
 }
 
 function clone(data) {
@@ -55,6 +54,16 @@ function willWin(data, color) {
   }
   // 如果不会赢, 就应该返回一个null
   return null;
+}
+
+function computerMove() {
+  let choice = bestChoice(borderData, color);
+  if (choice.point) borderData[choice.point[0]][choice.point[1]] = color;
+  if (check(borderData, color)) {
+    alert(color == 2 ? "X is winner" : "O is winner");
+  }
+  color = 3 - color;
+  show(borderData);
 }
 
 // 此方法用来检查当前棋局会不会赢
