@@ -4,6 +4,7 @@ let borderData = [
   [0, 0, 0],
   [0, 0, 0],
 ];
+let empty = 9;
 let color = 1;
 function show(borderData) {
   border.innerHTML = "";
@@ -22,6 +23,7 @@ function show(borderData) {
 }
 
 function move(i, j) {
+  empty--;
   borderData[i][j] = color;
   if (check(borderData, color)) {
     alert(color === 2 ? "X is winner" : " O is winner");
@@ -57,13 +59,20 @@ function willWin(data, color) {
 }
 
 function computerMove() {
-  let choice = bestChoice(borderData, color);
-  if (choice.point) borderData[choice.point[0]][choice.point[1]] = color;
-  if (check(borderData, color)) {
-    alert(color == 2 ? "X is winner" : "O is winner");
+  if (empty === 0) {
+    alert("tie");
+  } else {
+    empty--;
+    let choice = bestChoice(borderData, color);
+    if (choice.point) {
+      borderData[choice.point[0]][choice.point[1]] = color;
+    }
+    if (check(borderData, color)) {
+      alert(color == 2 ? "X is winner" : "O is winner");
+    }
+    color = 3 - color;
+    show(borderData);
   }
-  color = 3 - color;
-  show(borderData);
 }
 
 // 此方法用来检查当前棋局会不会赢
@@ -133,6 +142,8 @@ function bestChoice(data, color) {
   let result = -1;
   let point = null;
   // 这里的遍历是把每一种可能都给走一遍
+  // 这里是模拟博弈过程, 我自己会把每一可能去走一遍 ,然后对手也会跟我这的路径去模拟自己的
+  // 我这在这里去我自己模拟博弈过程中最好的结果,并返回当时的那第一步应该落在那里
   outer: for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       if (data[i][j]) continue;
