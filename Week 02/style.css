@@ -1,0 +1,16 @@
+.cell {
+  width: 6px;
+  height: 6px;
+  line-height: 6px;
+  text-align: center;
+  background-color: gray;
+  display: inline-block;
+  border-left: solid 1px white;
+  border-bottom: solid 1px white;
+  vertical-align: middle;
+}
+#container {
+  padding: 0;
+  margin: 0;
+  width: 701px;
+}
