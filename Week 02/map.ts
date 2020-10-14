@@ -3,7 +3,7 @@ class MyMap {
   public table: { [_: number]: Coordinate };
   public mousedown: boolean;
   public clear: boolean;
-  public queue: Coordinate[];
+  public queue: any;
   public container: HTMLElement;
   constructor() {
     // 先检查是是否有值已经存储了,并初始化
@@ -52,10 +52,13 @@ class MyMap {
   }
 
   public async findPath(start_: Coordinate, end_: Coordinate) {
-    this.queue = [start_];
+    this.queue = new Sorted(
+      [start_],
+      (a: Coordinate, b: Coordinate) =>
+        this.distance(a, end_) - this.distance(b, end_)
+    );
     while (this.queue.length) {
       let targetPoint = this.queue.shift()!;
-
       // 如果targetPoint的点已经和我们要找的终点是一样,就停止
       if (targetPoint.x === end_.x && targetPoint.y === end_.y) {
         let path: number[] = [];
@@ -149,6 +152,10 @@ class MyMap {
       setTimeout(resolve, ms_);
     });
   }
+
+  private distance(point: Coordinate, end: Coordinate) {
+    return (point.x - end.x) ** 2 + (point.y - end.y) ** 2;
+  }
 }
 
 interface Coordinate {
@@ -158,10 +165,10 @@ interface Coordinate {
 
 class Sorted {
   // data 是一个无序数组
-  private data: number[];
+  private data: any[];
   private compare: Function;
 
-  constructor(data: number[], compare: Function) {
+  constructor(data: any[], compare: Function) {
     this.data = data.slice();
     // 如果有compare函数传入 就用compare函数 ,没有就用默认的函数
     this.compare = compare || ((a: number, b: number) => a - b);
@@ -192,7 +199,7 @@ class Sorted {
     return min;
   }
   // 数组添加方法
-  public give(v: number) {
+  public give(v: any) {
     this.data.push(v);
   }
 }
