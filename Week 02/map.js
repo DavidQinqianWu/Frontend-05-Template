@@ -48,7 +48,6 @@ var MyMap = /** @class */ (function () {
         this.queue = [];
         this.container = document.querySelector("#container");
         document.addEventListener("mousedown", function (e) {
-            console.log("e", e);
             _this.mousedown = true;
             _this.clear = e.which === 3;
         });
@@ -115,7 +114,6 @@ var MyMap = /** @class */ (function () {
                     case 3:
                         _a.sent();
                         this.container.children[targetPoint.y * 100 + targetPoint.x].style.backgroundColor = "red ";
-                        console.log(this.table);
                         return [3 /*break*/, 2];
                     case 4: return [2 /*return*/, path];
                     case 5:
@@ -185,22 +183,28 @@ var MyMap = /** @class */ (function () {
     MyMap.prototype.insertCoordinate = function (coordinate_, previousCoordinate_) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                // 如果超过了边缘 那么就返回, 什么也不做
-                if (coordinate_.x < 0 ||
-                    coordinate_.x >= 100 ||
-                    coordinate_.y < 0 ||
-                    coordinate_.y >= 100) {
-                    return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        // 如果超过了边缘 那么就返回, 什么也不做
+                        if (coordinate_.x < 0 ||
+                            coordinate_.x >= 100 ||
+                            coordinate_.y < 0 ||
+                            coordinate_.y >= 100) {
+                            return [2 /*return*/];
+                        }
+                        // 如果遇到了标记过的,那么也返回,什么也不做
+                        if (this.table[coordinate_.y * 100 + coordinate_.x]) {
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, this.sleep(30)];
+                    case 1:
+                        _a.sent();
+                        this.container.children[coordinate_.y * 100 + coordinate_.x].style.backgroundColor = "lightgreen";
+                        // 记录下当前该点的 前驱点
+                        this.table[coordinate_.y * 100 + coordinate_.x] = previousCoordinate_;
+                        this.queue.push(coordinate_);
+                        return [2 /*return*/];
                 }
-                // 如果遇到了标记过的,那么也返回,什么也不做
-                if (this.table[coordinate_.y * 100 + coordinate_.x]) {
-                    return [2 /*return*/];
-                }
-                this.container.children[coordinate_.y * 100 + coordinate_.x].style.backgroundColor = "lightgreen";
-                // 记录下当前该点的 前驱点
-                this.table[coordinate_.y * 100 + coordinate_.x] = previousCoordinate_;
-                this.queue.push(coordinate_);
-                return [2 /*return*/];
             });
         });
     };
@@ -210,4 +214,35 @@ var MyMap = /** @class */ (function () {
         });
     };
     return MyMap;
+}());
+var Sorted = /** @class */ (function () {
+    function Sorted(data, compare) {
+        this.data = data.slice();
+        this.compare = compare || (function (a, b) { return a - b; });
+    }
+    Sorted.prototype.take = function () {
+        if (!this.data.length) {
+            return;
+        }
+        // 设置一个默认值
+        var min = this.data[0];
+        var minIndex = 0;
+        for (var i = 0; i < this.data.length; i++) {
+            if (this.compare(this.data[i], min) < 0) {
+                min = this.data[i];
+                minIndex = i;
+            }
+        }
+        // 直接把数组里面的最后一位覆盖掉还要被删掉的位置
+        this.data[minIndex] = this.data[this.data.length - 1];
+        // 然后把最后以为的数据给pop掉,因为已经把最后一位的数据给放到了 要被删除的位置, 所以出现两个一样的最后一位数据
+        // 这样我们的数组就用最低的时间成本,把那个要被删除的元素给抹去
+        this.data.pop();
+        // 返回那个最小的被删除的元素
+        return min;
+    };
+    Sorted.prototype.give = function (v) {
+        this.data.push(v);
+    };
+    return Sorted;
 }());

@@ -16,7 +16,6 @@ class MyMap {
     this.queue = [];
     this.container = document.querySelector("#container")! as HTMLElement;
     document.addEventListener("mousedown", (e) => {
-      console.log("e", e);
       this.mousedown = true;
       this.clear = e.which === 3;
     });
@@ -69,7 +68,6 @@ class MyMap {
           (this.container.children[
             targetPoint.y * 100 + targetPoint.x
           ] as HTMLElement).style.backgroundColor = "red ";
-          console.log(this.table);
         }
         return path;
       } else {
@@ -137,6 +135,7 @@ class MyMap {
     if (this.table[coordinate_.y * 100 + coordinate_.x]) {
       return;
     }
+    await this.sleep(30);
     (this.container.children[
       coordinate_.y * 100 + coordinate_.x
     ] as HTMLElement).style.backgroundColor = "lightgreen";
@@ -155,4 +154,45 @@ class MyMap {
 interface Coordinate {
   x: number;
   y: number;
+}
+
+class Sorted {
+  // data 是一个无序数组
+  private data: number[];
+  private compare: Function;
+
+  constructor(data: number[], compare: Function) {
+    this.data = data.slice();
+    // 如果有compare函数传入 就用compare函数 ,没有就用默认的函数
+    this.compare = compare || ((a: number, b: number) => a - b);
+  }
+  public take() {
+    if (!this.data.length) {
+      return;
+    }
+    // 设置一个默认值的最小值
+    let min = this.data[0];
+    let minIndex = 0;
+    // 每一次都跟这个最小值去对比, 如果小, 就给他交换过去
+    for (let i = 0; i < this.data.length; i++) {
+      // 如果小于0 说明 this.data[i]里面的值 要比目前的min要小
+      // 那么就把this.data[i]里面的值赋给 min 拿到最下的值
+      // 同时还要拿到最小的 当时那个最小值所在 this.data 里面的 index
+      if (this.compare(this.data[i], min) < 0) {
+        min = this.data[i];
+        minIndex = i;
+      }
+    }
+    // 直接把数组里面的最后一位覆盖掉还要被删掉的位置
+    this.data[minIndex] = this.data[this.data.length - 1];
+    // 然后把最后以为的数据给pop掉,因为已经把最后一位的数据给放到了 要被删除的位置, 所以出现两个一样的最后一位数据
+    // 这样我们的数组就用最低的时间成本,把那个要被删除的元素给抹去
+    this.data.pop();
+    // 返回那个最小的被删除的元素
+    return min;
+  }
+  // 数组添加方法
+  public give(v: number) {
+    this.data.push(v);
+  }
 }
