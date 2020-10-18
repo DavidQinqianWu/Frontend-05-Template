@@ -202,4 +202,8 @@ class Sorted {
   public give(v: any) {
     this.data.push(v);
   }
+
+  get length() {
+    return this.data.length;
+  }
 }
