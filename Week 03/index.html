@@ -1,0 +1,37 @@
+<script>
+  var regexp = /([0-9\.]+)|([\t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)/g;
+  // ()表示捕获
+  // ([0-9\.]+) 匹配 0-9 还有 . 的类型
+  // ([\t]+) 匹配所有的 空格
+  // ([\r\n]+) 匹配所有的换行回车
+  // 匹配 *
+  // 匹配 /
+  // 匹配 +
+  // 匹配 -
+
+  var dictionary = [
+    "Number",
+    "Whitespace",
+    "LineTerminator",
+    "*",
+    "/",
+    "+",
+    "-",
+  ];
+
+  function tokenize(source) {
+    let result = null;
+    while (true) {
+      // 不断去扫描匹配字符
+      result = regexp.exec(source);
+      if (!result) break;
+      for (let i = 0; i <= dictionary.length; i++) {
+        if (result[i]) {
+          console.log(dictionary[i - 1]);
+        }
+      }
+      console.log(result);
+    }
+  }
+  tokenize("1024+10*25");
+</script>
