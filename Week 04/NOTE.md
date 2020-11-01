@@ -24,6 +24,15 @@
 1.  关注字符串的自重复行为
 
     -   依次删除掉我们字符串, 生成的新的字符串去 匹配最原始的老字符串 ,看看哪一个是能匹配上最多的, 看 pattern 是否有自重复的特性
+    -   当我们的 pattern 串, 出现了不能匹配的时候, 我们不着急要直接回到前面, 我们应该回到 已经匹配了的位置, 就是 j 的位置
+
+    ```javascript
+    let pattern = "abcd    abce"; // 这里为了方便理解, 空格分开  j 循环
+    let source = "abcd abcd abce x"; // 这里为了方便理解, 空格分开 i 循环
+    // pattern 中的 e 出现不匹配的时候, 我们应该跳转到 pattern 中的 d 的位置, 继续跟 source 去比较,看看是否跟 source 继续匹配上, 因为 pattern 的自身重复性, 我们知道 只有 pattern 中的 e 匹配不上,但是 abc 在 source 中肯定是匹配上的, 所以 j 应该跳到 pattern 中的'd', 继续跟 source 匹配
+    //
+    ```
+
     -   pattern 字符串上要记录 每一个 pattern 自我遍历的时候, 已经有多少个 char 重复了: 例如 : `"abababc"` 在遍历这个 pattern 的时候, 要记录每一位 char 已经自身遍历了多少遍, 所以生成出来表示 **每一个 char** 重复次数(跳转表格) 应该是: `[0,0,0,1,2,3,4]`;
 
 # Wildcard
