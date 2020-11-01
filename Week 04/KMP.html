@@ -14,7 +14,7 @@
 		{
 			//"abababc"
 			let i = 1; // 自重复开始的位置
-			let j = 0; // 表示已经匹配上了多少个字符
+			let j = 0; // 表示已经连续匹配上了多少个字符
 			while (i < pattern.length) {
 				if (pattern[i] === pattern[j]) {
 					++j;
