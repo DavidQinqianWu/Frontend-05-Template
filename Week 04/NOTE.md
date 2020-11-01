@@ -29,8 +29,17 @@
     ```javascript
     let pattern = "abcd    abce"; // 这里为了方便理解, 空格分开  j 循环
     let source = "abcd abcd abce x"; // 这里为了方便理解, 空格分开 i 循环
-    // pattern 中的 e 出现不匹配的时候, 我们应该跳转到 pattern 中的 d 的位置, 继续跟 source 去比较,看看是否跟 source 继续匹配上, 因为 pattern 的自身重复性, 我们知道 只有 pattern 中的 e 匹配不上,但是 abc 在 source 中肯定是匹配上的, 所以 j 应该跳到 pattern 中的'd', 继续跟 source 匹配, 这个时候 source 中的 d 和 pattern 中的 d 又匹配上了, 那么就可以继续往后走,而不用重新回到 pattern 的 头重新匹配
-    //
+    /**
+     * pattern 中的 e 出现不匹配的时候, 我们应该跳转到
+     * pattern 中的 d 的位置, 继续跟 source 去比较,
+     * 看看是否跟 source 继续匹配上,
+     * 因为 pattern 的自身重复性,
+     * 我们知道 只有 pattern 中的 e 匹配不上,
+     * 但是 abc 在 source 中肯定是匹配上的, 所以 j 应该到
+     * pattern 中的'd', 继续跟 source 匹配, 这个时候
+     * source 中的 d 和 pattern 中的 d 又匹配上了, 那么就可
+     * 以继续往后走,而不用重新回到 pattern 的 头重新匹配
+     */
     ```
 
     -   pattern 字符串上要记录 每一个 pattern 自我遍历的时候, 已经有多少个 char 重复了: 例如 : `"abababc"` 在遍历这个 pattern 的时候, 要记录每一位 char 已经自身遍历了多少遍, 所以生成出来表示 **每一个 char** 重复次数(跳转表格) 应该是: `[0,0,0,1,2,3,4]`;
