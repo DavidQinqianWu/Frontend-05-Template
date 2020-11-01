@@ -1,0 +1,51 @@
+<script>
+	function kmp(source, pattern) {
+		// 计算 自重复 表格, 自重复表格应该与 pattern 字符串的长度相等
+		let table = new Array(pattern.length).fill(0);
+
+		{
+			//"abababc"
+			let i = 1; // 自重复开始的位置
+			let j = 0; // 表示连续自重复的长度, 始终不会大于自重复的长度
+			while (i < pattern.length) {
+				if (pattern[i] === pattern[j]) {
+					++j;
+					++i;
+					table[i] = j;
+				} else {
+					// 如果出现不匹配了
+
+					if (j > 0) {
+						// 如果这个时候自重复长度已经大于了0
+						j = table[j];
+					} else {
+						++i;
+					}
+				}
+			}
+		}
+
+		{
+			let i = 0,
+				j = 0;
+			while (i < source.length) {
+				if (j === pattern.length) {
+					return true;
+				}
+
+				if (pattern[j] === source[i]) {
+					++i, ++j;
+				} else {
+					if (j > 0) {
+						j = table[j];
+					} else {
+						++i;
+					}
+				}
+			}
+			return false;
+		}
+	}
+
+	console.log(kmp("hello", "ll"));
+</script>

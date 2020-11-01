@@ -1,0 +1,59 @@
+<script>
+	// 利用Symbol 不可重复的特点, 防止字符串中本身支持 "$"
+	let $ = Symbol("$");
+	class Trie {
+		constructor() {
+			// 首先构建一个纯的干净的 object
+			this.root = Object.create(null);
+		}
+
+		insert(word) {
+			let node = this.root;
+
+			for (let c of word) {
+				// 如果该字符 不存在了 this.root当中, 生成一个子节点
+				if (!node[c]) {
+					node[c] = Object.create(null);
+				}
+				// 如果有, 就让他等于子树, 相当于查字典去 查找下一级
+				node = node[c];
+			}
+
+			if (!($ in node)) {
+				node[$] = 0;
+			}
+			node[$]++;
+		}
+		// most 方法去遍历整个树
+		most() {
+			let max = 0; // 记录出现最多的次的 $
+			let maxWord = null;
+			let visit = (node, word) => {
+				if (node[$] && node[$] > max) {
+					//记录 出现的最多的次数
+					max = node[$];
+					maxWord = word;
+				}
+				for (let p in node) {
+					visit(node[p], word + p);
+				}
+			};
+			visit(this.root, "");
+			console.log(maxWord);
+			console.log(max);
+		}
+	}
+
+	function randomWord(length) {
+		let s = "";
+		for (let i = 0; i < length; i++) {
+			s += String.fromCharCode(Math.random() * 26 + "a".charCodeAt(0));
+		}
+		return s;
+	}
+	let trie = new Trie();
+	// 创建 10000 个随机的 字符串
+	for (let i = 0; i < 10000; i++) {
+		trie.insert(randomWord(4));
+	}
+</script>
