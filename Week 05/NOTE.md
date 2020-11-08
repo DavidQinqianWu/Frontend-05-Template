@@ -19,4 +19,15 @@
 -   `getBoundingClientRect()` 这方法能够拿到我们创建 range 的位置(cssom)
 -   `insertNode` 方法,如果要插入的元素在 dom 上已经有, 那么就会默认的把之前的删除, 然后在添加上
 
-# CSSOM
+# Range
+
+> Range 表示一个包含节点与文本节点的一部分的文档片段
+
+1. 用到的 api
+
+-   `setStart`:
+
+    > 如果起始节点类型是 Text， Comment, or CDATASection 之一, 那么 startOffset 指的是从起始节点算起字符的偏移量。 对于其他 Node 类型节点， startOffset 是指从起始结点开始算起子节点的偏移量。 如果设置的起始位点在结束点之下（在文档中的位置），将会导致选区折叠，起始点和结束点都会被设置为指定的起始位置。
+
+-   `setEnd`:
+    > 如果结束节点类型是 Text， Comment, or CDATASection 之一, 那么 endOffset 指的是从结束节点算起字符的偏移量。 对于其他 Node 类型节点， endOffset 是指从结束结点开始算起子节点的偏移量。如果设置的结束点在起始点之上（在文档中的位置），将会导致选区折叠，起始点和结束点都会被设置为指定的结束位置。
