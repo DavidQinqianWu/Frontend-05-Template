@@ -1,24 +1,38 @@
 <script>
+	// KMP :
+	// 1. 先去用 pattern 模式串 制作跳转表格
+	// 2. 再用跳转表格去 匹配 源串
+
 	function kmp(source, pattern) {
 		// 计算 自重复 表格, 自重复表格应该与 pattern 字符串的长度相等
 		let table = new Array(pattern.length).fill(0);
+		/*
+		 * 制作跳转表格
+		 *
+		 */
 
 		{
 			//"abababc"
 			let i = 1; // 自重复开始的位置
-			let j = 0; // 表示连续自重复的长度, 始终不会大于自重复的长度
+			let j = 0; // 表示已经连续匹配上了多少个字符
 			while (i < pattern.length) {
 				if (pattern[i] === pattern[j]) {
 					++j;
 					++i;
 					table[i] = j;
 				} else {
-					// 如果出现不匹配了
+					// 如果出现不匹配了,
+					// 如果匹配数目大于 0
 
+					// ******************/
+					// 难点:
 					if (j > 0) {
-						// 如果这个时候自重复长度已经大于了0
+						// 不着回到最开始, 而是这个应该继续往前去找, 我们先看那个最近的不匹配的位置
+						// 是否有匹配的字符串
 						j = table[j];
-					} else {
+					}
+					// ******************/
+					else {
 						++i;
 					}
 				}
