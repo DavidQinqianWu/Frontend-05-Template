@@ -1,0 +1,80 @@
+<input id="r" type="text" />
+<script>
+	let callbacks = new Map();
+	let reactivities = new Map();
+	let usedReactivities = [];
+	let object = {
+		r: 1,
+		g: 1,
+		b: 1,
+	};
+
+	let po = reactive(object);
+
+	// 把 dom 上的 value绑定到 我们的值上
+	effect(() => {
+		document.getElementById("r").value = po.r;
+	});
+	// 把 值上的绑定到 dom 上, 完成一个双向绑定
+	document
+		.getElementById("r")
+		.addEventListener("input", (event) => (po.r = event.target.value));
+
+	function effect(callback) {
+		// callbacks.push(callback);
+		// 每次调用的时候先清空下这个数组
+		usedReactivities = [];
+		// 然后利用这个 callback() 中会调用 get 方法,
+		// 这样我们可以利用proxy 中的 get 的方法重新定义的 get 方法, 加入记录变量
+		callback();
+
+		for (let reactivity of usedReactivities) {
+			if (!callbacks.has(reactivity[0])) {
+				callbacks.set(reactivity[0], new Map());
+			}
+			if (!callbacks.get(reactivity[0]).has(reactivity[1])) {
+				callbacks.get(reactivity[0]).set(reactivity[1], []);
+			}
+			callbacks.get(reactivity[0]).get(reactivity[1]).push(callback);
+		}
+	}
+
+	// 实现 vue3 中的 reactive 函数
+	// 添加缓存逻辑
+	function reactive(object) {
+		// 如果已经存了, 就不要继续了
+		if (reactivities.has(object)) {
+			return reactivities.get(object);
+		}
+		// 配置 proxy, 通过 get
+		let proxy = new Proxy(object, {
+			// 重新定义 set 方法
+			set(obj, prop, val) {
+				obj[prop] = val;
+				if (callbacks.get(obj)) {
+					if (callbacks.get(obj).get(prop)) {
+						for (let callback of callbacks.get(obj).get(prop)) {
+							callback();
+						}
+					}
+				}
+				return obj[prop];
+			},
+
+			// 重新定义 改 object 中的 get 方法
+			get(obj, prop) {
+				usedReactivities.push([obj, prop]);
+				//针对 vue3 中的 obj.a.b
+				if (typeof obj[prop] === "object") {
+					return reactive(obj[prop]);
+				}
+				return obj[prop];
+			},
+		});
+		// 这里追有在走一下 set, 进行缓存
+		reactivities.set(object, proxy);
+		// 返回这个设置好的代理
+		// 这样可以继续触发
+		return proxy;
+	}
+</script>
